@@ -5,12 +5,18 @@ const {app, BrowserWindow, Menu} = require('electron')
 let win
 
 function createWindow() {
-	win = new BrowserWindow({
+	const options = {
 		width: 500, 
 		height: 150,
 		resizable: false,
 		title: 'Bitcoin Price'
-	})
+	}
+	if(process.platform === 'darwin') {
+		options.titleBarStyle = 'hidden'
+	} else {
+		options.frame = false
+	}
+	win = new BrowserWindow(options)
 
 	// win.webContents.openDevTools()
 

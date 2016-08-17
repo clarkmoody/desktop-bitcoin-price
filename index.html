@@ -6,33 +6,116 @@
     <style type="text/css">
       body {
         background-color: #000;
-        color: #fff;
-        padding: 5vh;
+        color: #fffdec;
+        padding: 0;
         overflow: hidden;
-        font-size: 14pt;
+        font-size: 12pt;
+        font-family: 'Consolas','Monaco','Courier New', monospace;
         line-height: 1.0em;
+        -webkit-app-region: drag;
+      }
+      body * {
+        -webkit-app-region: drag;
       }
       h1 {
-        color: #fffdec;
         margin: 0;
-        padding: 0 5vh;
-        font-size: 80vh;
-        line-height: 1.0em;
+        padding: 0;
+        font-size: 48pt;
+        line-height: 110px;
         -webkit-user-select: none;
         text-align: center;
-        font-family: 'Consolas','Monaco','Courier New', monospace;
+        /*font-family: 'Consolas','Monaco','Courier New', monospace;*/
         font-weight: normal;
+        cursor: default;
       }
+      #header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 22px;
+        border: 1px solid #666;
+      }
+      #main {
+        position: absolute;
+        top: 25px;
+        left: 0;
+        right: 0;
+        height: 102px;
+        border-left: 1px solid #666;
+        border-right: 1px solid #666;
+      }
+      #footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 22px;
+        border: 1px solid #666;
+      }
+      a {
+        color: #fff;
+        text-decoration: none;
+        -webkit-app-region: no-drag;
+      }
+      p {
+        display: inline-block;
+        margin: 0;
+        line-height: 22px;
+        font-size: 11pt;
+        padding: 0 0.5em;
+      }
+      p.title {}
+      p.close {
+        float: right;
+        border-left: 1px solid #666;
+        padding: 0;
+        cursor: pointer;
+        -webkit-app-region: no-drag;
+      }
+      p.close a {
+        display: block;
+        height: 100%;
+        width: 22px;
+        text-align: center;
+      }
+      p.close a:hover {
+        background-color: #333;
+      }
+      p.link {
+        border-right: 1px solid #666;
+      }
+      p.status {
+        float: right;
+        border-left: 1px solid #666;
+      }
+
+      .up { color: #06ca17; }
+      .dn { color: #ca1a06; }
     </style>
   </head>
   <body>
-    <h1>$<span id="price">&mdash;.&mdash;</span></h1>
-    <script src="https://d3dy5gmtp8yhk7.cloudfront.net/2.1/pusher.min.js" type="text/javascript"></script>
+    <div id="header">
+      <p class="title">Bitcoin Price - Bitstamp</p>
+      <p class="close"><a href="#" id="close">&times;</a></p>
+    </div>
+    <div id="main">
+      <h1>$<span id="price">&mdash;.&mdash;</span></h1>
+    </div>
+    <div id="footer">
+      <p class="link"><a href="https://clarkmoody.com/" id="ext-link">Clark Moody</a></p>
+      <p class="status"><span id="conn-status">&mdash;</span></p>
+    </div>
+    
+    <script src="./pusher.min.js" type="text/javascript"></script>
     <script>
+      const {remote, shell} = require('electron')
+
       const socket = new Pusher('de504dc5763aeef9ff52')
       const channel = socket.subscribe('live_trades')
       let lastPrice = 0
       channel.bind('trade', handleTrade)
+      socket.connection.bind('state_change', handleState)
 
       function handleTrade(trade) {
         const price = parseFloat(trade.price)
@@ -42,22 +125,48 @@
         const h1 = document.getElementsByTagName('h1')[0]
         if(price > lastPrice) {
           // Color UP
-          delayColor(h1, '#06ca17', c0, 2500)
+          flashClass(h1,'up',2500)
         } else if(price < lastPrice) {
           // Color DOWN
-          delayColor(h1, '#ca1a06', c0, 2500)
+          flashClass(h1,'dn',2500)
         }
         lastPrice = price
       }
 
-      let cid = -1
-      function delayColor(el,ci,cf,delay) {
-        el.style.color = ci
-        window.clearTimeout(cid)
-        cid = window.setTimeout(() => {
-          el.style.color = cf
-        }, delay)
+      function handleState(states) {
+        // states = {previous: 'oldState', current: 'newState'}
+        console.log(states)
+        let s = states.current
+        if(typeof s === 'undefined' || s.length == 0)
+          return
+        s = [s[0].toUpperCase(), s.slice(1)].join('')
+        document.getElementById('conn-status').innerHTML = s
       }
+
+      let fid = -1
+      let last = ''
+      function flashClass(el,c,duration) {
+        if(last != c)
+          el.className = c
+        window.clearTimeout(fid)
+        fid = window.setTimeout(() => {
+          el.classList.remove(c)
+        }, duration)
+        last = c
+      }
+
+      function close() {
+        let win = remote.getCurrentWindow()
+        win.close()
+      }
+
+      document.getElementById('close').addEventListener('click', close)
+      document.getElementsByTagName('close')[0].addEventListener('click', close)
+
+      document.getElementById('ext-link').addEventListener('click', (e) => {
+        e.preventDefault()
+        shell.openExternal('https://clarkmoody.com/')
+      })
     </script>
   </body>
 </html>
