@@ -13,6 +13,6 @@ npm i -g electron-prebuilt
 
 Clone this repo then
 ```
-cd bitcoin-price
+cd desktop-bitcoin-price
 electron .
 ```
