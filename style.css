@@ -32,12 +32,11 @@ h1 {
 }
 #main {
   position: absolute;
-  top: 25px;
+  top: 23px;
   left: 0;
   right: 0;
   height: 102px;
-  border-left: 1px solid #666;
-  border-right: 1px solid #666;
+  border: 1px solid #666;
 }
 #footer {
   position: absolute;
@@ -101,12 +100,12 @@ table tr.price td {
 table tr.amount {}
 table tr.amount td {
   font-size: 24px;
-  line-height: 40px;
+  line-height: 35px;
 }
 table tr.price td.mid,
 table tr.amount td.mid {
-  font-size: 16px;
-  padding: 0 15px;
+  font-size: 14px;
+  padding: 0 6px;
   text-align: center;
 }
 table tr.price td.mid {
