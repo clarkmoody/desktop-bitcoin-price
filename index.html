@@ -7,11 +7,22 @@
   </head>
   <body>
     <div id="header">
-      <p class="title">Bitcoin Price - Bitstamp</p>
+      <p class="title">Bitcoin Quote</p>
       <p class="close"><a href="#" id="close">&times;</a></p>
     </div>
     <div id="main">
-      <h1>$<span id="price">&mdash;.&mdash;</span></h1>
+      <table>
+        <tr class="price">
+          <td id="bid-price">&mdash;</td>
+          <td class="mid">USD</td>
+          <td id="ask-price">&mdash;</td>
+        </tr>
+        <tr class="amount">
+          <td id="bid-amount">&mdash;</td>
+          <td class="mid">BTC</td>
+          <td id="ask-amount">&mdash;</td>
+        </tr>
+      </table>
     </div>
     <div id="footer">
       <p class="link"><a href="https://clarkmoody.com/" id="ext-link">Clark Moody</a></p>

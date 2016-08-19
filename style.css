@@ -83,6 +83,39 @@ p.status {
   float: right;
   border-left: 1px solid #666;
 }
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+table tr {}
+table td {
+  padding: 0;
+  border: 0;
+}
+table tr.price {}
+table tr.price td {
+  font-size: 48px;
+  line-height: 48px;
+  padding-top: 12px;
+}
+table tr.amount {}
+table tr.amount td {
+  font-size: 24px;
+  line-height: 40px;
+}
+table tr.price td.mid,
+table tr.amount td.mid {
+  font-size: 16px;
+  padding: 0 15px;
+  text-align: center;
+}
+table tr.price td.mid {
+  padding-top: 12px;
+}
+table tr.price td:first-child, 
+table tr.amount td:first-child {
+  text-align: right;
+}
 
 .up { color: #06ca17; }
 .dn { color: #ca1a06; }
