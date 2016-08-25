@@ -23,7 +23,8 @@ const lastQuote = {
   ask: {
     price: 0,
     amount: 0
-  }
+  },
+  spread: 0
 }
 const book = {
   ts: 0,
@@ -114,7 +115,7 @@ function handleBookDiff(data) {
 }
 
 function quote() {
-  return {
+  const q = {
     bid: {
       price: book.bids.length > 0 ? parseFloat(book.bids[0][0]) : NaN,
       amount: book.bids.length > 0 ? parseFloat(book.bids[0][1]) : NaN
@@ -122,8 +123,13 @@ function quote() {
     ask: {
       price: book.asks.length > 0 ? parseFloat(book.asks[0][0]) : NaN,
       amount: book.asks.length > 0 ? parseFloat(book.asks[0][1]) : NaN
-    }
+    },
+    spread: NaN
   }
+  if(!isNaN(q.bid.price) && !isNaN(q.ask.price)) {
+    q.spread = 1-q.bid.price/q.ask.price
+  }
+  return q
 }
 
 function processQuote(q) {
@@ -149,6 +155,8 @@ function processQuote(q) {
     } else if(q.bid.amount < lastQuote.bid.amount) {
       flashClass('bid-amount','dn','up',2500)
     }
+    lastQuote.bid.price = q.bid.price
+    lastQuote.bid.amount = q.bid.amount
   }
   if(isNaN(q.ask.price)) {
     blank('ask-price')
@@ -166,12 +174,20 @@ function processQuote(q) {
     } else if(q.ask.amount < lastQuote.ask.amount) {
       flashClass('ask-amount','dn','up',2500)
     }
+    lastQuote.ask.price = q.ask.price
+    lastQuote.ask.amount = q.ask.amount
   }
-
-  lastQuote.bid.price = q.bid.price
-  lastQuote.bid.amount = q.bid.amount
-  lastQuote.ask.price = q.ask.price
-  lastQuote.ask.amount = q.ask.amount
+  if(isNaN(q.spread)) {
+    blank('spread')
+  } else {
+    document.getElementById('spread').innerHTML = `${(q.spread*100).toFixed(2)}%`
+    if(q.spread < lastQuote.spread) {
+      flashClass('spread','up','dn',2500)
+    } else if(q.spread > lastQuote.spread) {
+      flashClass('spread','dn','up',2500)
+    }
+    lastQuote.spread = q.spread
+  }
 }
 
 function loadBook() {

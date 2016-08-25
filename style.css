@@ -110,6 +110,7 @@ table tr.amount td.mid {
 }
 table tr.price td.mid {
   padding-top: 12px;
+  line-height: 1.0em;
 }
 table tr.price td:first-child, 
 table tr.amount td:first-child {
